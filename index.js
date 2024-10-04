@@ -37,6 +37,25 @@ async function run() {
       const result = await database.deleteOne(query);
       res.send(result);
     });
+    app.put("/coffees/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          name: data.name,
+          quantity: data.quantity,
+          supplier: data.supplier,
+          taste: data.taste,
+          category: data.category,
+          details: data.details,
+          photo: data.photo,
+        },
+      };
+      const result = await database.updateOne(query, updateDoc, options);
+      res.send(result);
+    });
     app.get("/coffees/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
