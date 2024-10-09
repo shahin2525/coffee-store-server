@@ -25,16 +25,30 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    const database = client.db("coffeeDB").collection("coffee");
+    const coffeeDB = client.db("coffeeDB").collection("coffee");
+    const userDB = client.db("coffeeDB").collection("users");
+    //
 
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await userDB.insertOne(user);
+      res.send(result);
+    });
+
+    app.get("/users", async (req, res) => {
+      const users = await userDB.find().toArray();
+      res.send(users);
+    });
+
+    //
     app.get("/coffees", async (req, res) => {
-      const result = await database.find().toArray();
+      const result = await coffeeDB.find().toArray();
       res.send(result);
     });
     app.delete("/coffees/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await database.deleteOne(query);
+      const result = await coffeeDB.deleteOne(query);
       res.send(result);
     });
     app.put("/coffees/:id", async (req, res) => {
@@ -53,20 +67,20 @@ async function run() {
           photo: data.photo,
         },
       };
-      const result = await database.updateOne(query, updateDoc, options);
+      const result = await coffeeDB.updateOne(query, updateDoc, options);
       res.send(result);
     });
     app.get("/coffees/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await database.findOne(query);
+      const result = await coffeeDB.findOne(query);
       res.send(result);
     });
 
     // create coffee data
     app.post("/create-coffee", async (req, res) => {
       const data = req.body;
-      const result = await database.insertOne(data);
+      const result = await coffeeDB.insertOne(data);
       res.send(result);
     });
 
