@@ -115,7 +115,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", function (req, res) {
-  res.send("hello world");
+  res.send("hello world 2");
 });
 
 app.listen(port, function () {
